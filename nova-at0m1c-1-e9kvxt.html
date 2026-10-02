@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0a0d16;
+  --panel:#10131f;
+  --panel-2:#151827;
+  --line:rgba(255,255,255,0.07);
+  --line-strong:rgba(255,255,255,0.14);
+  --text:#eceefb;
+  --muted:#7d84a3;
+  --accent:#8b7bff;
+  --accent-2:#4fe0c4;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+}
+
+/* =========================
+   NOVA PRELOAD PAGE
+========================= */
+
+#preview{
+  position:fixed;
+  inset:0;
+  display:flex;
+  width:100%;
+  height:100%;
+  background:var(--bg);
+  transition:opacity .45s ease;
+  z-index:1;
+}
+
+/* Sidebar */
+
+.sidebar{
+  width:64px;
+  min-width:64px;
+  height:100%;
+  background:var(--panel);
+  border-right:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
+  padding:20px 10px;
+  position:relative;
+  z-index:5;
+}
+
+.brand{
+  display:none;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin-top:6px;
+}
+
+.nav-item{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  padding:9px 10px;
+  border-radius:9px;
+  color:var(--muted);
+  background:transparent;
+  border:0;
+}
+
+.nav-item.active{
+  background:var(--panel-2);
+  color:var(--text);
+}
+
+.nav-icon{
+  width:20px;
+  height:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.nav-icon svg{
+  width:20px;
+  height:20px;
+}
+
+/* Main */
+
+.main{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      #1b2340 0%,
+      #05060c 70%
+    );
+}
+
+.main::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(6,8,14,.38);
+  pointer-events:none;
+}
+
+/* Star background */
+
+.stars{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  border-radius:50%;
+  background:white;
+  opacity:.5;
+  animation:twinkle 2.5s infinite ease-in-out;
+}
+
+@keyframes twinkle{
+  0%,100%{
+    opacity:.15;
+  }
+  50%{
+    opacity:.8;
+  }
+}
+
+/* Fake Nova home */
+
+.fake-home{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.home-content{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  animation:home-rise .7s ease both;
+}
+
+@keyframes home-rise{
+  from{
+    opacity:0;
+    transform:translateY(14px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.wordmark{
+  margin:0;
+  font-size:108px;
+  line-height:1;
+  font-weight:700;
+  letter-spacing:2px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      var(--accent-2) 130%
+    );
+
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+
+  text-shadow:
+    0 0 50px rgba(139,123,255,.45);
+}
+
+.tagline{
+  margin:14px 0 46px;
+  color:var(--muted);
+  font-size:16px;
+}
+
+/* Fake cards */
+
+.fake-actions{
+  display:flex;
+  gap:16px;
+}
+
+.fake-card{
+  width:170px;
+  height:64px;
+
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  padding:16px 22px;
+
+  border-radius:12px;
+
+  border:1px solid var(--line-strong);
+
+  background:rgba(16,19,31,.55);
+
+  backdrop-filter:blur(8px);
+}
+
+.fake-card-icon{
+  width:22px;
+  height:22px;
+  color:var(--accent);
+}
+
+.fake-card-text{
+  text-align:left;
+}
+
+.fake-card-title{
+  font-size:14px;
+  font-weight:600;
+}
+
+.fake-card-sub{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* =========================
+   LOADING OVERLAY
+========================= */
+
+#loadingOverlay{
+  position:fixed;
+  inset:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:
+    rgba(5,7,13,.42);
+
+  backdrop-filter:blur(3px);
+
+  z-index:100;
+
+  transition:
+    opacity .5s ease,
+    visibility .5s ease;
+}
+
+.loading-box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+
+  padding:26px 34px;
+
+  border:1px solid rgba(255,255,255,.1);
+
+  border-radius:14px;
+
+  background:
+    rgba(16,19,31,.72);
+
+  backdrop-filter:blur(14px);
+
+  box-shadow:
+    0 20px 80px rgba(0,0,0,.35);
+}
+
+.loading-title{
+  font-size:17px;
+  font-weight:500;
+  color:var(--text);
+}
+
+.loading-sub{
+  font-size:12px;
+  color:var(--muted);
+  font-family:'Space Mono',monospace;
+}
+
+.dots{
+  display:flex;
+  gap:5px;
+  margin-top:2px;
+}
+
+.dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--accent);
+
+  animation:
+    loading-dot 1.2s infinite ease-in-out;
+}
+
+.dot:nth-child(2){
+  animation-delay:.15s;
+}
+
+.dot:nth-child(3){
+  animation-delay:.3s;
+}
+
+@keyframes loading-dot{
+  0%,80%,100%{
+    opacity:.25;
+    transform:translateY(0);
+  }
+
+  40%{
+    opacity:1;
+    transform:translateY(-4px);
+  }
+}
+
+/* =========================
+   REAL PAGE
+========================= */
+
+#frame{
+  position:fixed;
+  inset:0;
+
+  width:100%;
+  height:100%;
+
+  border:0;
+
+  opacity:0;
+
+  z-index:200;
+
+  transition:opacity .45s ease;
+}
+
+#frame.ready{
+  opacity:1;
+}
+
+/* Error */
+
+#error{
+  position:fixed;
+  inset:0;
+
+  display:none;
+
+  align-items:center;
+  justify-content:center;
+
+  z-index:500;
+
+  background:#05060c;
+}
+
+.error-box{
+  max-width:700px;
+  padding:30px;
+
+  color:#ff7777;
+
+  font-family:'Space Mono',monospace;
+  white-space:pre-wrap;
+}
+
+/* Mobile */
+
+@media(max-width:720px){
+
+  .wordmark{
+    font-size:56px;
+  }
+
+  .fake-actions{
+    display:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =================================
+     FAKE NOVA PAGE
+================================= -->
+
+<div id="preview">
+
+  <aside class="sidebar">
+
+    <nav class="nav">
+
+      <!-- Home -->
+      <div class="nav-item active">
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 11.5 12 4l9 7.5"/>
+            <path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/>
+          </svg>
+        </span>
+      </div>
+
+      <!-- Games -->
+      <div class="nav-item">
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="2.5" y="7.5" width="19" height="10" rx="4"/>
+            <path d="M7 10.5v4"/>
+            <path d="M5 12.5h4"/>
+            <circle cx="16" cy="10.8" r=".9" fill="currentColor" stroke="none"/>
+            <circle cx="18.2" cy="13" r=".9" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+      </div>
+
+      <!-- Settings -->
+      <div class="nav-item">
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/>
+            <line x1="4" y1="18" x2="20" y2="18"/>
+            <circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+      </div>
+
+    </nav>
+
+  </aside>
+
+
+  <main class="main">
+
+    <!-- Stars -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Fake home -->
+    <div class="fake-home">
+
+      <div class="home-content">
+
+        <h1 class="wordmark">
+          Nova
+        </h1>
+
+        <p class="tagline">
+          Your space for games, your way.
+        </p>
+
+        <div class="fake-actions">
+
+          <div class="fake-card">
+
+            <svg
+              class="fake-card-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <rect x="2.5" y="7.5" width="19" height="10" rx="4"/>
+              <path d="M7 10.5v4"/>
+              <path d="M5 12.5h4"/>
+              <circle cx="16" cy="10.8" r=".9" fill="currentColor"/>
+              <circle cx="18.2" cy="13" r=".9" fill="currentColor"/>
+            </svg>
+
+            <div class="fake-card-text">
+              <div class="fake-card-title">Games</div>
+              <div class="fake-card-sub">Your library</div>
+            </div>
+
+          </div>
+
+
+          <div class="fake-card">
+
+            <svg
+              class="fake-card-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <circle cx="9" cy="6" r="2"/>
+              <line x1="4" y1="12" x2="20" y2="12"/>
+              <circle cx="16" cy="12" r="2"/>
+              <line x1="4" y1="18" x2="20" y2="18"/>
+              <circle cx="11" cy="18" r="2"/>
+            </svg>
+
+            <div class="fake-card-text">
+              <div class="fake-card-title">Settings</div>
+              <div class="fake-card-sub">Customize Nova</div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- =================================
+     LOADING OVERLAY
+================================= -->
+
+<div id="loadingOverlay">
+
+  <div class="loading-box">
+
+    <div class="loading-title">
+      Loading Nova
+    </div>
+
+    <div class="dots">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <div class="loading-sub">
+      connecting to jsDelivr
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =================================
+     REAL NOVA PAGE
+================================= -->
+
+<iframe
+  id="frame"
+  title="Nova"
+></iframe>
+
+
+<!-- =================================
+     ERROR
+================================= -->
+
+<div id="error">
+
+  <div class="error-box" id="errorText"></div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   CONFIG
+========================= */
+
+const SOURCE =
+  "https://cdn.jsdelivr.net/gh/aoliveros091-sys/Nova@main/Index.html";
+
+const BASE =
+  "https://cdn.jsdelivr.net/gh/aoliveros091-sys/Nova@main/";
+
+
+/* =========================
+   FAKE STARFIELD
+========================= */
+
+const stars = document.getElementById("stars");
+
+for(let i = 0; i < 110; i++){
+
+  const star = document.createElement("div");
+
+  star.className = "star";
+
+  star.style.left =
+    Math.random() * 100 + "%";
+
+  star.style.top =
+    Math.random() * 100 + "%";
+
+  star.style.animationDelay =
+    Math.random() * 3 + "s";
+
+  star.style.animationDuration =
+    (1.5 + Math.random() * 3) + "s";
+
+  stars.appendChild(star);
+}
+
+
+/* =========================
+   LOAD REAL NOVA
+========================= */
+
+async function loadNova(){
+
+  const preview =
+    document.getElementById("preview");
+
+  const overlay =
+    document.getElementById("loadingOverlay");
+
+  const frame =
+    document.getElementById("frame");
+
+  const error =
+    document.getElementById("error");
+
+  const errorText =
+    document.getElementById("errorText");
+
+
+  try{
+
+    const response =
+      await fetch(SOURCE, {
+        cache:"no-store"
+      });
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "jsDelivr returned HTTP " +
+        response.status +
+        " " +
+        response.statusText
+      );
+
+    }
+
+
+    let html =
+      await response.text();
+
+
+    /*
+       Make relative Nova assets resolve
+       against the jsDelivr repository.
+    */
+
+    html =
+      html.replace(
+        /<head([^>]*)>/i,
+        `<head$1><base href="${BASE}">`
+      );
+
+
+    /*
+       Put the downloaded Nova HTML
+       into a blob document.
+    */
+
+    const blob =
+      new Blob(
+        [html],
+        {
+          type:"text/html"
+        }
+      );
+
+
+    const blobURL =
+      URL.createObjectURL(blob);
+
+
+    /*
+       Wait until the real Nova page
+       has actually loaded.
+    */
+
+    frame.onload = function(){
+
+      /*
+         Real Nova fades in over the
+         fake Nova loading screen.
+      */
+
+      frame.classList.add("ready");
+
+      overlay.style.opacity = "0";
+      overlay.style.visibility = "hidden";
+
+      preview.style.opacity = "0";
+
+      setTimeout(() => {
+
+        preview.remove();
+        overlay.remove();
+
+        URL.revokeObjectURL(blobURL);
+
+      }, 500);
+
+    };
+
+
+    frame.src = blobURL;
+
+
+  }catch(err){
+
+    console.error(err);
+
+    preview.style.display = "none";
+    overlay.style.display = "none";
+
+    error.style.display = "flex";
+
+    errorText.textContent =
+      "Failed to load Nova\n\n" +
+      err.message;
+
+  }
+
+}
+
+
+loadNova();
+
+</script>
+
+</body>
+</html>
